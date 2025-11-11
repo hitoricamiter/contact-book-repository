@@ -1,7 +1,7 @@
 # contact-book-repository
 # ContactApp
 
-**ContactApp** — это простое Android-приложение для управления контактами с использованием Room Database и Kotlin. Пользователь может добавлять, редактировать и удалять контакты, а также просматривать их в списке.
+Android-приложение для управления контактами с использованием Room Database и Kotlin. Пользователь может добавлять, редактировать и удалять контакты, а также просматривать их в списке.
 
 ## Особенности
 - Сохранение контактов локально с помощью Room Database.
@@ -17,3 +17,4 @@
 - RecyclerView
 - Android View Binding
 - Coroutines (lifecycleScope + Dispatchers.IO)
+- Swipe left to delete
