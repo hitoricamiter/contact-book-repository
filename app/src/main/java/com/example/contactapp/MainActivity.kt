@@ -3,6 +3,7 @@ package com.example.contactapp
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -16,6 +17,12 @@ import com.example.contactapp.util.ContactAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -25,11 +32,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         contactDatabase =
-            Room.databaseBuilder(applicationContext, ContactDatabase::class.java, "ContactsDB").fallbackToDestructiveMigration()
+            Room.databaseBuilder(applicationContext, ContactDatabase::class.java, "ContactsDB")
+                .fallbackToDestructiveMigration()
                 .build()
 
         contactAdapter = ContactAdapter(contacts) { contact, position ->
@@ -41,6 +50,56 @@ class MainActivity : AppCompatActivity() {
             itemAnimator = DefaultItemAnimator()
             adapter = contactAdapter
         }
+
+        val swipeToDeleteCallback =
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean = false
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val contact = contacts[position]
+                    deleteContact(contact, position)
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    val itemView = viewHolder.itemView
+                    val paint = Paint().apply { color = Color.RED }
+
+                    if (dX < 0) { // свайп влево
+                        c.drawRect(
+                            itemView.right.toFloat() + dX,
+                            itemView.top.toFloat(),
+                            itemView.right.toFloat(),
+                            itemView.bottom.toFloat(),
+                            paint
+                        )
+                    }
+
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                }
+            }
+        ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(binding.recyclerView)
+
 
         lifecycleScope.launch {
             val contactDB = withContext(Dispatchers.IO) {
@@ -71,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             addContactBinding.phoneEdit.setText(it.phone)
         }
 
-        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setView(addContactBinding.root)
             .setCancelable(false)
             .setPositiveButton(if (isUpdate) "Update" else "Save", null)
@@ -83,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
 
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val name = addContactBinding.firstNameEdit.text.toString().trim()
             val lastName = addContactBinding.lastNameEdit.text.toString().trim()
             val email = addContactBinding.emailEdit.text.toString().trim()
