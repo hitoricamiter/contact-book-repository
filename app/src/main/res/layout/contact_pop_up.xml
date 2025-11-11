@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-    <EditText
-        android:id="@+id/firstNameEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="First name"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/firstNameEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="First name"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/lastNameEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Last name"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/lastNameEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Last name"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/emailEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="email"
-        android:textSize="15sp" />
+        <EditText
+            android:id="@+id/emailEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="email"
+            android:textSize="15sp" />
 
-    <EditText
-        android:id="@+id/phoneEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="phone"
-        android:textSize="15sp" />
-
-
+        <EditText
+            android:id="@+id/phoneEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="phone"
+            android:textSize="15sp" />
 
 
+    </LinearLayout>
 
-
-</LinearLayout>
+</layout>

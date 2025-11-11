@@ -1,5 +1,6 @@
 package com.example.contactapp
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.view.View
+import androidx.databinding.DataBindingUtil
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,8 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         contactDatabase =
             Room.databaseBuilder(applicationContext, ContactDatabase::class.java, "ContactsDB")
@@ -50,6 +52,9 @@ class MainActivity : AppCompatActivity() {
             itemAnimator = DefaultItemAnimator()
             adapter = contactAdapter
         }
+
+        val handler: MainActivityButtonHandler = MainActivityButtonHandler()
+        binding.button = handler
 
         val swipeToDeleteCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -77,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     val itemView = viewHolder.itemView
                     val paint = Paint().apply { color = Color.RED }
 
-                    if (dX < 0) { // свайп влево
+                    if (dX < 0) {
                         c.drawRect(
                             itemView.right.toFloat() + dX,
                             itemView.top.toFloat(),
@@ -109,11 +114,6 @@ class MainActivity : AppCompatActivity() {
             contacts.addAll(contactDB)
             contactAdapter.notifyDataSetChanged()
         }
-
-        binding.floatingActionButton.setOnClickListener {
-            addAndEditContacts(isUpdate = false)
-        }
-
     }
 
     private fun addAndEditContacts(
@@ -224,6 +224,14 @@ class MainActivity : AppCompatActivity() {
                 binding.recyclerView.scrollToPosition(0)
             }
         }
+    }
+
+    inner class MainActivityButtonHandler() {
+
+        fun onAddButtonClick(view: View) {
+            addAndEditContacts(isUpdate = false)
+        }
+
     }
 
 
